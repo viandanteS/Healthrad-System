@@ -1,0 +1,59 @@
+<div class="min-h-screen bg-health-bg flex flex-col items-center justify-center p-4">
+  
+  <div class="mb-12 text-center">
+    <h1 class="text-5xl md:text-6xl font-black text-health-primary tracking-tight">
+      healthrad.it
+    </h1>
+  </div>
+
+  <div class="w-full max-w-sm">
+    <h2 class="text-health-primary font-bold text-lg mb-8 text-center">
+      Benvenuto! Inserisci le credenziali di accesso!
+    </h2>
+
+    <form (ngSubmit)="onLogin()" class="space-y-6 flex flex-col items-center">
+      
+      <div class="w-full">
+        <label class="block text-health-primary font-bold text-sm mb-2 pl-2">e-mail</label>
+        <input 
+          type="email" 
+          placeholder="mario.rossi@gmail.com" 
+          [(ngModel)]="email" 
+          name="email"
+          class="pill-input text-center font-bold text-health-primary placeholder-gray-400"
+          required
+        >
+      </div>
+
+      <div class="w-full">
+        <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Password</label>
+        <input 
+          type="password" 
+          placeholder="••••••••" 
+          [(ngModel)]="password" 
+          name="password"
+          class="pill-input text-center text-health-primary font-bold tracking-widest placeholder-gray-400"
+          required
+        >
+        <div class="mt-2 text-xs font-bold text-health-primary pl-2 cursor-pointer hover:underline">
+          Non ricordi le credenziali? <u>Recuperale qui</u>
+        </div>
+      </div>
+
+      <div class="pt-4 flex flex-col items-center gap-6">
+        <button type="submit" class="pill-btn px-10 text-lg">ACCEDI</button>
+
+        <button type="button" class="bg-gray-300 px-4 py-1 rounded-sm text-xs font-bold text-gray-700 shadow-sm cursor-pointer hover:bg-gray-400">
+          Accesso Token
+        </button>
+      </div>
+      
+    </form>
+    
+    <!-- Simulazione Accesso per test Backend -->
+    <div *ngIf="mockTokenMessage" class="mt-8 text-center text-xs font-mono bg-health-secondary p-2 rounded">
+       {{mockTokenMessage}}
+    </div>
+  </div>
+
+</div>

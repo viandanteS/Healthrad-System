@@ -1,0 +1,234 @@
+<!-- === BARRA STRUMENTI === -->
+<div class="px-8 pt-8 pb-4 flex flex-col md:flex-row justify-center items-center gap-4">
+  <!-- Searchbar centrata -->
+  <div class="relative w-full max-w-lg">
+    <input
+      type="text"
+      placeholder="Cerca cliente"
+      (input)="onSearch($event)"
+      class="w-full pl-5 pr-12 py-3 border-2 border-health-primary rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-health-teal transition-colors"
+    />
+    <div class="absolute right-4 top-1/2 -translate-y-1/2 bg-health-primary rounded-full w-7 h-7 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottone Aggiungi -->
+  <button (click)="apriForm()"
+    class="px-7 py-3 rounded-full bg-health-primary text-white font-bold text-sm hover:bg-gray-800 transition-colors whitespace-nowrap flex items-center gap-2">
+    Aggiungi nuovo cliente
+  </button>
+</div>
+
+<!-- Titolo -->
+<h2 class="text-center font-black text-health-primary text-xl mb-6">Elenco clienti censiti</h2>
+
+<!-- === STATO LOADING / ERRORE === -->
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <div class="w-10 h-10 border-4 border-health-primary border-t-transparent rounded-full animate-spin"></div>
+  </div>
+} @else if (errorMsg()) {
+  <div class="mx-8 bg-red-50 border-2 border-red-400 rounded-xl p-4 text-red-700 font-medium">{{ errorMsg() }}</div>
+} @else {
+
+  <!-- === LISTA RIGHE PILLOLA === -->
+  <div class="px-8 flex flex-col items-center space-y-3">
+    @for (c of clientiFiltrati(); track c.cf; let i = $index) {
+      <div class="flex items-center w-full max-w-7xl border-2 border-health-primary rounded-full overflow-hidden bg-white hover:bg-slate-50 transition-colors" style="height: 48px;">
+
+        <!-- Numero -->
+        <div class="border-r-2 border-health-primary px-3 h-full flex items-center justify-center font-bold text-sm text-health-primary min-w-[2.5rem] flex-shrink-0">
+          {{ i + 1 }}
+        </div>
+
+        <!-- Nome Cognome -->
+        <div class="border-r-2 border-health-primary px-4 h-full flex items-center font-bold text-sm text-health-primary flex-shrink-0 w-44 truncate">
+          {{ c.nome }} {{ c.cognome }}
+        </div>
+
+        <!-- Data Nascita -->
+        <div class="border-r-2 border-health-primary px-4 h-full flex items-center text-sm text-gray-600 font-medium flex-shrink-0 w-32">
+          {{ c.dataNascita | date:'dd/MM/yyyy' }}
+        </div>
+
+        <!-- Codice Fiscale -->
+        <div class="border-r-2 border-health-primary px-4 h-full flex items-center text-sm font-mono font-semibold text-health-primary flex-shrink-0 w-48">
+          {{ c.cf }}
+        </div>
+
+        <!-- Telefono -->
+        <div class="border-r-2 border-health-primary px-4 h-full flex items-center text-sm text-gray-600 font-medium flex-shrink-0 w-40">
+          {{ c.telefono || '—' }}
+        </div>
+
+        <!-- Email (espanso) -->
+        <div class="border-r-2 border-health-primary px-4 h-full flex items-center text-sm text-gray-600 font-medium flex-1 truncate">
+          {{ c.email }}
+        </div>
+
+        <!-- Azioni (diventa flessibile e centrato alla fine con padding unificato) -->
+        <div class="flex items-center justify-center gap-2 px-4 h-full flex-shrink-0">
+          <!-- Prenota appuntamento (Icona calendario nera) -->
+          <button title="Prenota appuntamento" class="w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center hover:bg-gray-500 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+            </svg>
+          </button>
+
+          <!-- Dettaglio / Modifica (Icona matita nera) -->
+          <button (click)="apriDettaglio(c)" title="Modifica" class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="text-center py-16 text-gray-400 font-medium">
+        Nessun cliente trovato. Clicca "Aggiungi nuovo cliente" per iniziare.
+      </div>
+    }
+  </div>
+
+  <p class="text-center mt-4 text-xs text-gray-400 pb-8 font-medium">
+    {{ clientiFiltrati().length }} client{{ clientiFiltrati().length === 1 ? 'e' : 'i' }}
+  </p>
+}
+
+<!-- ===== MODAL NUOVO CLIENTE ===== -->
+@if (showModal()) {
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" (click)="chiudiForm()"></div>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center px-7 py-5 border-b-2 border-gray-100">
+        <h3 class="text-lg font-black text-health-primary">Nuovo Cliente</h3>
+        <button (click)="chiudiForm()" class="text-gray-400 hover:text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div class="px-7 py-6 space-y-4">
+        @if (formError()) {
+          <div class="bg-red-50 border border-red-300 rounded-lg p-3 text-sm text-red-600 font-medium">{{ formError() }}</div>
+        }
+        @if (formSuccess()) {
+          <div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-700 font-medium">{{ formSuccess() }}</div>
+        }
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-health-primary mb-1.5">Nome *</label>
+            <input type="text" [(ngModel)]="nuovoCliente.nome" name="nome" placeholder="Mario"
+              class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-health-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-health-primary mb-1.5">Cognome *</label>
+            <input type="text" [(ngModel)]="nuovoCliente.cognome" name="cognome" placeholder="Rossi"
+              class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-health-primary"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-health-primary mb-1.5">Codice Fiscale * (16 caratteri)</label>
+          <input type="text" [(ngModel)]="nuovoCliente.cf" name="cf" placeholder="RSSMRA85M01H501Z" maxlength="16"
+            class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:border-health-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-health-primary mb-1.5">Email (Facoltativa)</label>
+          <input type="email" [(ngModel)]="nuovoCliente.email" name="email" placeholder="mario.rossi@email.com"
+            class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-health-primary"/>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-health-primary mb-1.5">Telefono</label>
+            <input type="tel" [(ngModel)]="nuovoCliente.telefono" name="telefono" placeholder="+39 320 000 0000"
+              class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-health-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-health-primary mb-1.5">Data di Nascita *</label>
+            <input type="date" [(ngModel)]="nuovoCliente.dataNascita" name="dataNascita"
+              class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-health-primary"/>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 px-7 pb-6">
+        <button (click)="chiudiForm()" class="px-5 py-2 text-sm font-semibold text-gray-600 border-2 border-gray-200 rounded-full hover:border-gray-400">Annulla</button>
+        <button (click)="salvaCliente()" class="pill-btn px-6 text-sm bg-gray-400 text-white rounded-full">Salva Cliente</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== MODAL DETTAGLIO / MODIFICA CLIENTE ===== -->
+@if (clienteSelezionato()) {
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" (click)="chiudiDettaglio()"></div>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center px-7 py-5 border-b-2 border-gray-100">
+        <h3 class="text-lg font-black text-health-primary">
+          {{ clienteSelezionato()!.nome }} {{ clienteSelezionato()!.cognome }}
+        </h3>
+        <button (click)="chiudiDettaglio()" class="text-gray-400 hover:text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      
+      <div class="px-7 py-6 space-y-4">
+        @if (formError()) {
+          <div class="bg-red-50 border border-red-300 rounded-lg p-3 text-sm text-red-600 font-medium">{{ formError() }}</div>
+        }
+        @if (formSuccess()) {
+          <div class="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-700 font-medium">{{ formSuccess() }}</div>
+        }
+
+        @if (!clienteInModifica()) {
+          <!-- Modalità LETTURA -->
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Codice Fiscale</p><p class="font-mono font-semibold text-health-primary">{{ clienteSelezionato()!.cf }}</p></div>
+            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Data di Nascita</p><p class="font-semibold">{{ clienteSelezionato()!.dataNascita | date:'dd/MM/yyyy' }}</p></div>
+            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</p><p class="font-medium text-health-primary">{{ clienteSelezionato()!.email }}</p></div>
+            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Telefono</p><p class="font-medium">{{ clienteSelezionato()!.telefono || '—' }}</p></div>
+          </div>
+        } @else {
+          <!-- Modalità MODIFICA -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-health-primary mb-1.5">Nome</label>
+              <input type="text" [(ngModel)]="clienteEditData.nome" class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-health-primary"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-health-primary mb-1.5">Cognome</label>
+              <input type="text" [(ngModel)]="clienteEditData.cognome" class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-health-primary"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-400 mb-1.5">Codice Fiscale (Immodificabile)</label>
+              <input type="text" [value]="clienteEditData.cf" disabled class="w-full bg-gray-100 border-2 border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-500 cursor-not-allowed"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-health-primary mb-1.5">Email</label>
+              <input type="email" [(ngModel)]="clienteEditData.email" class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-health-primary"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-health-primary mb-1.5">Telefono</label>
+              <input type="tel" [(ngModel)]="clienteEditData.telefono" class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-health-primary"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-health-primary mb-1.5">Data di Nascita *</label>
+              <input type="date" [(ngModel)]="clienteEditData.dataNascita" class="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-health-primary"/>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-end gap-3 px-7 pb-6">
+        @if (!clienteInModifica()) {
+          <button (click)="chiudiDettaglio()" class="px-5 py-2 text-sm font-semibold text-gray-600 border-2 border-gray-200 rounded-full hover:border-gray-400">Chiudi</button>
+          <button (click)="abilitaModifica()" class="px-6 py-2 text-sm font-bold bg-health-primary text-white rounded-full hover:bg-gray-800">Modifica</button>
+        } @else {
+          <button (click)="clienteInModifica.set(false)" class="px-5 py-2 text-sm font-semibold text-gray-600 border-2 border-gray-200 rounded-full hover:border-gray-400">Annulla</button>
+          <button (click)="salvaModifiche()" class="px-6 py-2 text-sm font-bold bg-green-600 text-white rounded-full hover:bg-green-700">Salva e Aggiorna</button>
+        }
+      </div>
+    </div>
+  </div>
+}
