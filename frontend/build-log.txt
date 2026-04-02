@@ -1,0 +1,47 @@
+
+> frontend@0.0.0 build
+> ng build
+
+- Building...
+
+Application bundle generation failed. [9.061 seconds]
+
+X [ERROR] TS-992010: 'imports' is only valid on a component that is standalone. [plugin angular-compiler]
+
+    src/app/features/appuntamenti/appuntamenti.ts:5:11:
+      5 Ôöé   imports: [],
+        ÔòÁ            ~~
+
+  Did you forget to add 'standalone: true' to this @Component?
+
+    src/app/features/appuntamenti/appuntamenti.ts:9:13:
+      9 Ôöé export class Appuntamenti {
+        ÔòÁ              ~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'mockTokenMessage' does not exist on type 'LoginComponent'. [plugin angular-compiler]
+
+    src/app/login/login.component.html:54:16:
+      54 Ôöé     <div *ngIf="mockTokenMessage" class="mt-8 text-center text-xs ...
+         ÔòÁ                 ~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/login/login.component.ts:11:15:
+      11 Ôöé   templateUrl: './login.component.html',
+         ÔòÁ                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG9: Property 'mockTokenMessage' does not exist on type 'LoginComponent'. [plugin angular-compiler]
+
+    src/app/login/login.component.html:55:9:
+      55 Ôöé        {{mockTokenMessage}}
+         ÔòÁ          ~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component LoginComponent.
+
+    src/app/login/login.component.ts:11:15:
+      11 Ôöé   templateUrl: './login.component.html',
+         ÔòÁ                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+

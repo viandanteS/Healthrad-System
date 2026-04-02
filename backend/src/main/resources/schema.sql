@@ -131,4 +131,4 @@ CREATE TABLE IF NOT EXISTS refresh_token (
 );
 
 -- Patch per permettere l'email vuota nei vecchi DB
-ALTER TABLE utente MODIFY email VARCHAR(255) UNIQUE NULL;
+-- ALTER TABLE utente MODIFY email VARCHAR(255) UNIQUE NULL;

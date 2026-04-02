@@ -16,6 +16,7 @@ export class LoginComponent {
   password = '';
   errorMessage = '';
   successMessage = '';
+  mockTokenMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 

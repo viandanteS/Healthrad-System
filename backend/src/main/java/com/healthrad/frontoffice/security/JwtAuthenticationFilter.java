@@ -14,6 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -40,8 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Se le credenziali sono valide per il jwt, fidiamoci ed evitiamo una query DB
             if (jwtUtil.validateToken(jwt, username)) {
+                String role = jwtUtil.extractRole(jwt);
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                if (role != null) {
+                    authorities.add(new SimpleGrantedAuthority(role));
+                }
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username, null, new ArrayList<>());
+                        username, null, authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

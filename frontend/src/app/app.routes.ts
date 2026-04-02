@@ -3,7 +3,8 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ShellComponent } from './shell/shell.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AnagraficaComponent } from './anagrafica/anagrafica.component';
+import { AnagraficaComponent } from './features/anagrafica/anagrafica.component';
+import { Appuntamenti } from './features/appuntamenti/appuntamenti';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -33,8 +34,8 @@ export const routes: Routes = [
         data: { roles: ['Addetto al Front-Office'] }
       },
 
-      // Gestione appuntamenti: solo per il Front-Office (da implementare)
-      // { path: 'appuntamenti', component: AppuntamentiComponent, canActivate: [roleGuard], data: { roles: ['Addetto al Front-Office'] } },
+      // Gestione appuntamenti: solo per il Front-Office
+      { path: 'appuntamenti', component: Appuntamenti, canActivate: [roleGuard], data: { roles: ['Addetto al Front-Office'] } },
 
       // Cartella clinica: solo per Medico (da implementare)
       // { path: 'pazienti', component: PazientiComponent, canActivate: [roleGuard], data: { roles: ['Medico specialista'] } },

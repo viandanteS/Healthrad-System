@@ -5,6 +5,7 @@ import com.healthrad.frontoffice.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ClienteController {
      * Usata dall'Anagrafica per popolare la tabella.
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public List<Cliente> getClienti(@RequestParam(required = false) String q) {
         if (q != null && !q.isBlank()) {
             return clienteRepository
@@ -45,6 +47,7 @@ public class ClienteController {
      * POST /api/clienti — Crea un nuovo profilo cliente.
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public ResponseEntity<?> creaCliente(@RequestBody Cliente cliente) {
         if (cliente.getCf() == null || cliente.getCf().length() != 16) {
             return ResponseEntity.badRequest().body("Il Codice Fiscale deve essere di esattamente 16 caratteri.");
@@ -82,6 +85,7 @@ public class ClienteController {
      * PUT /api/clienti/{cf} — Aggiorna un profilo cliente esistente.
      */
     @PutMapping("/{cf}")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public ResponseEntity<?> aggiornaCliente(@PathVariable String cf, @RequestBody Cliente clienteAggiornato) {
         if (clienteAggiornato.getDataNascita() == null) {
             return ResponseEntity.badRequest().body("La data di nascita è obbligatoria.");
