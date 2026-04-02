@@ -17,8 +17,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        toast.show('Sessione scaduta. Effettua nuovamente il login.', 'error');
-        auth.logout();
+        if (req.url.includes('/api/auth/login')) {
+           toast.show('Credenziali errate.', 'error');
+        } else {
+           toast.show('Sessione scaduta. Effettua nuovamente il login.', 'error');
+           auth.logout();
+        }
       } else if (error.status === 403) {
         toast.show('Accesso negato. Non hai i permessi per questa operazione.', 'error');
         auth.logout();

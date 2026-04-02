@@ -31,6 +31,14 @@ public class ClienteController {
         return clienteRepository.findAll();
     }
 
+    @GetMapping("/cerca")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
+    public ResponseEntity<Cliente> ricercaCliente(@RequestParam("cf") String cf) {
+        return clienteRepository.findById(cf)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
     @Autowired
     private com.healthrad.frontoffice.service.EmailService emailService;
 

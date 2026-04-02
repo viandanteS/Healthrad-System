@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-health-bg flex flex-col items-center justify-center p-4 py-12">
+    
+    <div class="mb-12 text-center">
+      <h1 class="text-3xl font-black text-health-primary tracking-tight">Inserisci i dati per creare un appuntamento</h1>
+    </div>
+  
+    <div class="w-full max-w-2xl bg-white rounded-[3rem] p-10 border-4 border-health-primary shadow-2xl">
+  
+      <div class="space-y-6 flex flex-col">
+          
+        <!-- Sezione Cliente -->
+        <div class="w-full mb-4">
+          <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Codice Fiscale</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="RSSMRA78B01A944" 
+              [(ngModel)]="cfRicevuto"
+              (keyup)="onCfChange()"
+              class="w-full pl-6 pr-14 py-3 border-4 border-health-primary rounded-full focus:outline-none focus:border-health-primary text-health-secondary font-bold"
+              style="text-transform: uppercase"
+            >
+            <div class="absolute right-4 top-3 text-health-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          
+          <div class="mt-4 flex gap-4">
+               <div class="flex-1">
+                   <label class="block text-health-primary font-bold text-sm mb-1 pl-2">Nome</label>
+                   <div class="pill-input bg-gray-200 text-gray-600 font-bold px-4 py-2 opacity-80 pointer-events-none">
+                       {{ clienteTrovato ? clienteTrovato.nome : 'Nome' }}
+                   </div>
+               </div>
+               <div class="flex-1">
+                   <label class="block text-health-primary font-bold text-sm mb-1 pl-2">Cognome</label>
+                   <div class="pill-input bg-gray-200 text-gray-600 font-bold px-4 py-2 opacity-80 pointer-events-none">
+                       {{ clienteTrovato ? clienteTrovato.cognome : 'Cognome' }}
+                   </div>
+               </div>
+               <div class="flex-1">
+                   <label class="block text-health-primary font-bold text-sm mb-1 pl-2">Data di nascita</label>
+                   <div class="pill-input bg-gray-200 text-gray-600 font-bold px-4 py-2 opacity-80 pointer-events-none">
+                       {{ clienteTrovato ? (clienteTrovato.dataNascita | date:'dd/MM/yyyy') : 'GG/MM/AAAA' }}
+                   </div>
+               </div>
+          </div>
+        </div>
+
+        <hr class="border-2 border-health-primary/20 my-4">
+
+        <!-- Sezione Appuntamento -->
+        <div class="w-full">
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Tipologia di visita</label>
+            <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="tipologiaVisita">
+                <option value="">Tipo</option>
+                <option *ngFor="let t of tipologie" [value]="t">{{t}}</option>
+            </select>
+        </div>
+
+        <div class="w-full">
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Ambulatorio/Medico</label>
+            <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="ambulatorio" (change)="onDataOAmbulatorioChange()">
+                <option value="">Ambulatorio/Medico</option>
+                <option *ngFor="let a of ambulatori" [value]="a">{{a}}</option>
+            </select>
+        </div>
+
+        <div class="w-full">
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Data appuntamento</label>
+            <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="dataPrevista" (change)="onDataOAmbulatorioChange()">
+        </div>
+
+        <div class="w-full">
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Ora appuntamento</label>
+            <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="orarioSelezionato" [disabled]="!dataPrevista || !ambulatorio">
+                <option value="">HH/MM</option>
+                <option *ngFor="let o of orariPossibili" [value]="o" [disabled]="isOccupato(o)" [ngClass]="{'bg-gray-300 text-gray-400': isOccupato(o)}">
+                    {{o}} <span *ngIf="isOccupato(o)">(Non Disp.)</span>
+                </option>
+            </select>
+        </div>
+  
+        <div class="pt-8 flex justify-center">
+          <button (click)="conferma()" class="pill-btn px-16 !bg-gray-300 hover:!bg-health-primary hover:!text-white shadow-md !text-health-primary transition-colors text-lg">
+              Conferma
+          </button>
+        </div>
+        
+      </div>
+    </div>
+  </div>

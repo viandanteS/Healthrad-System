@@ -1,0 +1,224 @@
+
+> frontend@0.0.0 start
+> ng serve
+
+- Building...
+
+Initial chunk files | Names         |  Raw size
+polyfills.js        | polyfills     |  88.09 kB | 
+main.js             | main          |  70.32 kB | 
+styles.css          | styles        |  22.64 kB | 
+
+                    | Initial total | 181.05 kB
+
+Application bundle generation complete. [2.925 seconds]
+
+Watch mode enabled. Watching for file changes...
+  Ô×£  Local:   http://localhost:4200/
+  Ô×£  press h + enter to show help
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.663 seconds]
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/consenso.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/consenso.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/prenotazioni.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.565 seconds]
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/consenso.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/consenso.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/prenotazioni.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.835 seconds]
+
+X [ERROR] Could not resolve "../../../environments/environment"
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:6:28:
+      6 Ôöé import { environment } from '../../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:10:28:
+      10 Ôöé import { environment } from '../../../environments/environment';
+         ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/consenso.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/consenso.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/prenotazioni.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.375 seconds]
+
+X [ERROR] Could not resolve "../../../environments/environment"
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:6:28:
+      6 Ôöé import { environment } from '../../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:10:28:
+      10 Ôöé import { environment } from '../../../environments/environment';
+         ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] Could not resolve "../../environments/environment"
+
+    src/app/services/consenso.service.ts:2:28:
+      2 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/consenso.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.202 seconds]
+
+X [ERROR] Could not resolve "../../../environments/environment"
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:6:28:
+      6 Ôöé import { environment } from '../../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/features/appuntamenti/aggiungi-appuntamento.component.ts:10:28:
+      10 Ôöé import { environment } from '../../../environments/environment';
+         ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Application bundle generation failed. [0.390 seconds]
+
+X [ERROR] TS2307: Cannot find module '../../environments/environment' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/services/prenotazioni.service.ts:4:28:
+      4 Ôöé import { environment } from '../../environments/environment';
+        ÔòÁ                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+- Changes detected. Rebuilding...
+
+Initial chunk files | Names                           |  Raw size
+polyfills.js        | polyfills                       |  88.09 kB | 
+main.js             | main                            |  68.39 kB | 
+styles.css          | styles                          |  27.44 kB | 
+chunk-KLFMENYW.js   | -                               |   1.55 kB | 
+
+                    | Initial total                   | 185.46 kB
+
+Lazy chunk files    | Names                           |  Raw size
+chunk-KZD5SUNA.js   | appuntamenti                    |  30.09 kB | 
+chunk-VIF52QUC.js   | aggiungi-appuntamento-component |  15.41 kB | 
+chunk-ZRRNKOJ2.js   | elabora-transazione-component   |   9.12 kB | 
+chunk-PAISTALK.js   | -                               |   1.30 kB | 
+
+Application bundle generation complete. [0.242 seconds]
+
+Page reload sent to client(s).
+23:46:52 [vite] Ô£¿ new dependencies optimized: rxjs/operators
+23:46:52 [vite] Ô£¿ optimized dependencies changed. reloading

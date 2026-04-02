@@ -57,4 +57,31 @@ public class PrenotazioneService {
         p.setStato("In attesa");
         return prenotazioneRepository.save(p);
     }
+
+    public List<Prenotazione> getAllPrenotazioni() {
+        return prenotazioneRepository.findAll();
+    }
+
+    @Transactional
+    public Prenotazione saldaPrenotazione(Long idPrenotazione) {
+        Prenotazione p = prenotazioneRepository.findById(idPrenotazione)
+            .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata"));
+        p.setSaldata(true);
+        return prenotazioneRepository.save(p);
+    }
+    
+    @Transactional
+    public void cancellaPrenotazione(Long idPrenotazione) {
+        Prenotazione p = prenotazioneRepository.findById(idPrenotazione)
+            .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata"));
+        if (!"Prenotato".equalsIgnoreCase(p.getStato())) {
+            throw new IllegalStateException("Puoi cancellare solo appuntamenti in stato 'Prenotato'.");
+        }
+        prenotazioneRepository.delete(p);
+    }
+    
+    public List<LocalTime> getOrariOccupati(LocalDate data, String codiceAmbulatorio) {
+        List<Prenotazione> prenotazioni = prenotazioneRepository.findByDataPrenotazioneAndAmbulatorio_CodiceAmbulatorio(data, codiceAmbulatorio);
+        return prenotazioni.stream().map(Prenotazione::getOrarioPrenotazione).toList();
+    }
 }

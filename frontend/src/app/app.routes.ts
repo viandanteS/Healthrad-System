@@ -34,8 +34,24 @@ export const routes: Routes = [
         data: { roles: ['Addetto al Front-Office'] }
       },
 
-      // Gestione appuntamenti: solo per il Front-Office
-      { path: 'appuntamenti', component: Appuntamenti, canActivate: [roleGuard], data: { roles: ['Addetto al Front-Office'] } },
+      {
+    path: 'appuntamenti',
+    loadComponent: () => import('./features/appuntamenti/appuntamenti').then(m => m.Appuntamenti),
+    canActivate: [roleGuard],
+    data: { roles: ['Addetto al Front-Office'] }
+  },
+  {
+    path: 'appuntamenti/nuovo',
+    loadComponent: () => import('./features/appuntamenti/aggiungi-appuntamento.component').then(m => m.AggiungiAppuntamentoComponent),
+    canActivate: [roleGuard],
+    data: { roles: ['Addetto al Front-Office'] }
+  },
+  {
+    path: 'appuntamenti/transazione/:id',
+    loadComponent: () => import('./features/appuntamenti/elabora-transazione.component').then(m => m.ElaboraTransazioneComponent),
+    canActivate: [roleGuard],
+    data: { roles: ['Addetto al Front-Office'] }
+  },
 
       // Cartella clinica: solo per Medico (da implementare)
       // { path: 'pazienti', component: PazientiComponent, canActivate: [roleGuard], data: { roles: ['Medico specialista'] } },

@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS consenso (
     cf_cliente VARCHAR(16) NOT NULL,
     id_cc BIGINT NULL,
     tipologia VARCHAR(100) NOT NULL,
-    file VARCHAR(255) NOT NULL,
+    file LONGBLOB NOT NULL,
     FOREIGN KEY (cf_cliente) REFERENCES cliente(cf),
     FOREIGN KEY (id_cc) REFERENCES cartella_clinica(id_cc)
 );
