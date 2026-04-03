@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService, Cliente } from '../../services/cliente.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-anagrafica',
@@ -39,7 +40,7 @@ export class AnagraficaComponent implements OnInit {
     );
   });
 
-  constructor(private clienteService: ClienteService) {}
+  constructor(private clienteService: ClienteService, private router: Router) {}
 
   ngOnInit() { this.caricaClienti(); }
 
@@ -53,6 +54,10 @@ export class AnagraficaComponent implements OnInit {
 
   onSearch(event: Event) {
     this.searchQuery.set((event.target as HTMLInputElement).value);
+  }
+
+  prenota(cf: string) {
+    this.router.navigate(['/appuntamenti'], { queryParams: { cf: cf } });
   }
 
   // --- Modal nuovo cliente ---

@@ -1,7 +1,9 @@
 package com.healthrad.frontoffice.controller;
 
+import com.healthrad.frontoffice.model.Dipendente;
 import com.healthrad.frontoffice.model.Prenotazione;
 import com.healthrad.frontoffice.service.PrenotazioneService;
+import com.healthrad.frontoffice.repository.MedicoTurnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +17,42 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/prenotazioni")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PrenotazioneController {
 
     @Autowired
     private PrenotazioneService prenotazioneService;
+
+    @Autowired
+    private MedicoTurnoRepository medicoTurnoRepository;
+
+    /**
+     * Helper: risale al medico di turno per una prenotazione
+     * tramite la catena Ambulatorio → RAT → RDT → Dipendente
+     */
+    private String trovaNomeMedico(Prenotazione p) {
+        try {
+            List<Dipendente> medici = medicoTurnoRepository.findMedicoByAmbulatorioAndDataAndOra(
+                p.getAmbulatorio().getCodiceAmbulatorio(),
+                p.getDataPrenotazione(),
+                p.getOrarioPrenotazione()
+            );
+            if (!medici.isEmpty()) {
+                Dipendente m = medici.get(0);
+                return m.getNome() + " " + m.getCognome();
+            }
+        } catch (Exception e) {
+            // Se le tabelle turno/rat/rdt sono vuote, non blocchiamo
+        }
+        return null;
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public ResponseEntity<List<PrenotazioneResponse>> getAllPrenotazioni() {
         List<PrenotazioneResponse> response = prenotazioneService.getAllPrenotazioni()
                 .stream()
-                .map(PrenotazioneResponse::new)
+                .map(p -> new PrenotazioneResponse(p, trovaNomeMedico(p)))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
     }
@@ -44,7 +71,7 @@ public class PrenotazioneController {
     public ResponseEntity<?> aggiungiNuovaPrenotazione(@RequestBody Prenotazione prenotazione) {
         try {
             Prenotazione saved = prenotazioneService.creaPrenotazione(prenotazione);
-            return ResponseEntity.ok(new PrenotazioneResponse(saved));
+            return ResponseEntity.ok(new PrenotazioneResponse(saved, trovaNomeMedico(saved)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -55,7 +82,7 @@ public class PrenotazioneController {
     public ResponseEntity<?> accettaCliente(@PathVariable Long id) {
         try {
             Prenotazione accepted = prenotazioneService.accettaCliente(id);
-            return ResponseEntity.ok(new PrenotazioneResponse(accepted));
+            return ResponseEntity.ok(new PrenotazioneResponse(accepted, trovaNomeMedico(accepted)));
         } catch (IllegalStateException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -66,7 +93,7 @@ public class PrenotazioneController {
     public ResponseEntity<?> saldaPrenotazione(@PathVariable Long id) {
         try {
             Prenotazione saldata = prenotazioneService.saldaPrenotazione(id);
-            return ResponseEntity.ok(new PrenotazioneResponse(saldata));
+            return ResponseEntity.ok(new PrenotazioneResponse(saldata, trovaNomeMedico(saldata)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -78,6 +105,17 @@ public class PrenotazioneController {
         try {
             prenotazioneService.cancellaPrenotazione(id);
             return ResponseEntity.ok().build();
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
+    public ResponseEntity<?> modificaPrenotazione(@PathVariable Long id, @RequestBody Prenotazione datiAggiornati) {
+        try {
+            Prenotazione aggiornata = prenotazioneService.modificaPrenotazione(id, datiAggiornati);
+            return ResponseEntity.ok(new PrenotazioneResponse(aggiornata, trovaNomeMedico(aggiornata)));
         } catch (IllegalStateException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

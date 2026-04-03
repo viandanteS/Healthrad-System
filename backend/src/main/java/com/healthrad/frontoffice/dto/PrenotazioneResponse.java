@@ -19,13 +19,19 @@ public class PrenotazioneResponse {
     private String cognomeCliente;
     
     private String cfMedico;
+    private String operatore;
     private String nomeMedico;
 
     private Boolean saldata;
     private String tipologia;
 
-    // Costruttore dal modello
+    // Costruttore base dal modello
     public PrenotazioneResponse(Prenotazione p) {
+        this(p, null);
+    }
+
+    // Costruttore con nome medico da turno
+    public PrenotazioneResponse(Prenotazione p, String nomeMedico) {
         this.id = p.getIdPrenotazione();
         this.stato = p.getStato();
         this.dataImmissione = p.getDataImmissione();
@@ -44,12 +50,12 @@ public class PrenotazioneResponse {
             this.cognomeCliente = p.getCliente().getCognome();
         }
 
-        // Il medico di un appuntamento è l'addetto?
-        // Supponiamo che l'addetto alla prenotazione sia il medico o il tecnico
         if (p.getAddetto() != null) {
-            this.cfMedico = p.getAddetto().getCf();
-            this.nomeMedico = p.getAddetto().getRuolo(); // Placeholder: potremmo mettere il ruolo o legarci all'entità Utente per il nome
+            this.operatore = p.getAddetto().getNome() + " " + p.getAddetto().getCognome();
         }
+
+        // Il medico viene dalla catena RAT → RDT → Dipendente
+        this.nomeMedico = nomeMedico;
     }
 
     public Long getId() { return id; }
@@ -62,6 +68,7 @@ public class PrenotazioneResponse {
     public String getNomeCliente() { return nomeCliente; }
     public String getCognomeCliente() { return cognomeCliente; }
     public String getCfMedico() { return cfMedico; }
+    public String getOperatore() { return operatore; }
     public String getNomeMedico() { return nomeMedico; }
     public Boolean getSaldata() { return saldata; }
     public String getTipologia() { return tipologia; }

@@ -11,20 +11,40 @@
         <!-- Sezione Cliente -->
         <div class="w-full mb-4">
           <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Codice Fiscale</label>
-          <div class="relative">
-            <input 
-              type="text" 
-              placeholder="RSSMRA78B01A944" 
-              [(ngModel)]="cfRicevuto"
-              (keyup)="onCfChange()"
-              class="w-full pl-6 pr-14 py-3 border-4 border-health-primary rounded-full focus:outline-none focus:border-health-primary text-health-secondary font-bold"
-              style="text-transform: uppercase"
-            >
-            <div class="absolute right-4 top-3 text-health-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input 
+                type="text" 
+                placeholder="RSSMRA78B01A944" 
+                [(ngModel)]="cfRicevuto"
+                (keyup)="onCfChange()"
+                class="w-full pl-6 pr-14 py-3 border-4 border-health-primary rounded-full focus:outline-none focus:border-health-primary text-black font-bold uppercase"
+                style="text-transform: uppercase"
+              >
+              <div class="absolute right-4 top-3 text-health-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              
+              <!-- Suggerimenti Autocomplete -->
+              <div *ngIf="clientiSuggeriti.length > 0 && !clienteTrovato" class="absolute left-0 right-0 top-14 bg-white border-2 border-health-primary rounded-2xl shadow-xl z-50 overflow-hidden mt-1 max-h-60 overflow-y-auto">
+                <div 
+                  *ngFor="let c of clientiSuggeriti" 
+                  (click)="selezionaCliente(c)"
+                  class="px-6 py-3 cursor-pointer hover:bg-health-primary hover:text-white font-bold text-health-secondary border-b last:border-b-0 border-gray-100 transition-colors"
+                >
+                  {{ c.cf }} - {{ c.nome }} {{ c.cognome }}
+                </div>
+              </div>
             </div>
+            
+            <button (click)="mostraTuttiIClienti()" class="pill-btn px-6 flex items-center justify-center gap-2" title="Mostra tutti i pazienti">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                </svg>
+                Elenco
+            </button>
           </div>
           
           <div class="mt-4 flex gap-4">
@@ -70,7 +90,7 @@
 
         <div class="w-full">
             <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Data appuntamento</label>
-            <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="dataPrevista" (change)="onDataOAmbulatorioChange()">
+            <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="dataPrevista" [min]="minDate" (change)="onDataOAmbulatorioChange()">
         </div>
 
         <div class="w-full">

@@ -1,8 +1,9 @@
--- Dati seed gestiti programmaticamente da DataInitializer.java
--- Gli utenti vengono creati a runtime con BCrypt via jBCrypt per evitare
--- incompatibilità con hash generati da altri linguaggi.
+-- Ambulatori
+MERGE INTO ambulatorio KEY (codice_ambulatorio) VALUES ('A01');
+MERGE INTO ambulatorio KEY (codice_ambulatorio) VALUES ('A02');
+MERGE INTO ambulatorio KEY (codice_ambulatorio) VALUES ('B01');
+MERGE INTO ambulatorio KEY (codice_ambulatorio) VALUES ('B02');
+MERGE INTO ambulatorio KEY (codice_ambulatorio) VALUES ('C01');
 
--- Mock ambulatori
-INSERT IGNORE INTO ambulatorio (codice_ambulatorio) VALUES ('AMB_01');
-INSERT IGNORE INTO ambulatorio (codice_ambulatorio) VALUES ('AMB_02');
-INSERT IGNORE INTO ambulatorio (codice_ambulatorio) VALUES ('AMB_03');
+-- I turni e le associazioni RAT/RDT sono inseriti dal DataInitializer
+-- dopo la creazione degli utenti/dipendenti

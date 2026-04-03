@@ -84,4 +84,30 @@ public class PrenotazioneService {
         List<Prenotazione> prenotazioni = prenotazioneRepository.findByDataPrenotazioneAndAmbulatorio_CodiceAmbulatorio(data, codiceAmbulatorio);
         return prenotazioni.stream().map(Prenotazione::getOrarioPrenotazione).toList();
     }
+
+    @Transactional
+    public Prenotazione modificaPrenotazione(Long idPrenotazione, Prenotazione datiAggiornati) {
+        Prenotazione p = prenotazioneRepository.findById(idPrenotazione)
+            .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata"));
+        
+        if (!"Prenotato".equalsIgnoreCase(p.getStato())) {
+            throw new IllegalStateException("Puoi modificare solo appuntamenti in stato 'Prenotato'.");
+        }
+
+        // Aggiorna campi modificabili
+        if (datiAggiornati.getTipologia() != null) {
+            p.setTipologia(datiAggiornati.getTipologia());
+        }
+        if (datiAggiornati.getAmbulatorio() != null) {
+            p.setAmbulatorio(datiAggiornati.getAmbulatorio());
+        }
+        if (datiAggiornati.getDataPrenotazione() != null) {
+            p.setDataPrenotazione(datiAggiornati.getDataPrenotazione());
+        }
+        if (datiAggiornati.getOrarioPrenotazione() != null) {
+            p.setOrarioPrenotazione(datiAggiornati.getOrarioPrenotazione());
+        }
+
+        return prenotazioneRepository.save(p);
+    }
 }
