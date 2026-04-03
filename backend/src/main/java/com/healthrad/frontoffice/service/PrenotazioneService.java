@@ -32,6 +32,7 @@ public class PrenotazioneService {
         // Inizializza i campi obbligatori o di default non inviati dal frontend
         p.setDataImmissione(LocalDate.now());
         if (p.getSaldata() == null) p.setSaldata(false);
+        if (p.getStato() == null) p.setStato("Prenotato");
 
         // 1. Recupera il CF del medico dal repository (query nativa sicura)
         String cfMedico = dipendenteRepository.findCfMedicoByAmbulatorioAndDataAndOra(
@@ -98,6 +99,10 @@ public class PrenotazioneService {
         Prenotazione p = prenotazioneRepository.findById(idPrenotazione)
                 .orElseThrow(() -> new IllegalArgumentException("Prenotazione non trovata"));
 
+        if (!"Prenotato".equals(p.getStato())) {
+            throw new IllegalStateException("Non è possibile modificare una prenotazione in stato " + p.getStato());
+        }
+
         p.setTipologia(datiAggiornati.getTipologia());
         p.setAmbulatorio(datiAggiornati.getAmbulatorio());
         p.setDataPrenotazione(datiAggiornati.getDataPrenotazione());
@@ -118,7 +123,7 @@ public class PrenotazioneService {
     @Transactional
     public Prenotazione accettaCliente(Long id) {
         Prenotazione p = prenotazioneRepository.findById(id).orElseThrow();
-        p.setStato("In Corso");
+        p.setStato("In Attesa");
         return prenotazioneRepository.save(p);
     }
 
@@ -132,6 +137,9 @@ public class PrenotazioneService {
     @Transactional
     public void cancellaPrenotazione(Long id) {
         Prenotazione p = prenotazioneRepository.findById(id).orElseThrow();
+        if (!"Prenotato".equals(p.getStato())) {
+            throw new IllegalStateException("Non è possibile cancellare una prenotazione in stato " + p.getStato());
+        }
         prenotazioneRepository.delete(p);
     }
 }

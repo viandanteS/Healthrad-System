@@ -25,6 +25,13 @@ public class Consenso {
     @Column(nullable = false)
     private byte[] file;
 
+    @Column(name = "nome_file")
+    private String nomeFile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_prenotazione")
+    private Prenotazione prenotazione;
+
     public Consenso() {}
 
     public Long getIdConsenso() {
@@ -65,5 +72,21 @@ public class Consenso {
 
     public void setFile(byte[] file) {
         this.file = file;
+    }
+
+    public String getNomeFile() {
+        return nomeFile;
+    }
+
+    public void setNomeFile(String nomeFile) {
+        this.nomeFile = nomeFile;
+    }
+
+    public Prenotazione getPrenotazione() {
+        return prenotazione;
+    }
+
+    public void setPrenotazione(Prenotazione prenotazione) {
+        this.prenotazione = prenotazione;
     }
 }

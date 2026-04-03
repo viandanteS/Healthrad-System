@@ -25,6 +25,7 @@ export class Appuntamenti implements OnInit {
 
   // Ordine
   mostraMenuFiltri: boolean = false;
+  mostraMenuCalendario: boolean = false;
   sortDirAmbulatorio: boolean = true;
   sortDirPaziente: boolean = true;
   sortDirData: boolean = true;
@@ -133,6 +134,7 @@ export class Appuntamenti implements OnInit {
 
   apriConsensi() {
     this.modaleTipoVisibile = 'CONSENSO';
+    this.caricaConsenso();
   }
 
   apriModifica() {
@@ -203,16 +205,41 @@ export class Appuntamenti implements OnInit {
 
   salvaConsenso() {
     if (this.appSelected && this.consensoFile && this.consensoTypologia) {
-      this.consensoService.creaConsenso(this.appSelected.cfCliente, this.consensoTypologia, this.consensoFile)
+      this.consensoService.creaConsenso(this.appSelected.cfCliente, this.appSelected.id, this.consensoTypologia, this.consensoFile)
         .subscribe({
           next: () => {
             this.toast.show("Consenso caricato con successo!", "success");
             this.chiudiDettaglio();
           },
-          error: () => this.toast.show("Errore upload consenso", "error")
+          error: (err) => this.toast.show(err.error || "Errore upload consenso", "error")
         });
     } else {
         this.toast.show("Compila tipo e seleziona il file PDF", "error");
+    }
+  }
+
+  consensoEsistente: any = null;
+  caricaConsenso() {
+    if (this.appSelected) {
+      this.consensoService.getConsensoByPrenotazione(this.appSelected.id).subscribe({
+        next: (res) => this.consensoEsistente = res,
+        error: () => this.consensoEsistente = null
+      });
+    }
+  }
+
+  scaricaFileConsenso() {
+    if(this.consensoEsistente) {
+      this.consensoService.downloadConsenso(this.consensoEsistente.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = this.consensoEsistente.nomeFile || 'consenso.pdf';
+          a.click();
+        },
+        error: () => this.toast.show("Errore download file", "error")
+      });
     }
   }
 

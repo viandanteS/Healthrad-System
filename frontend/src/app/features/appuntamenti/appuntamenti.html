@@ -32,7 +32,7 @@
     </button>
     
     <!-- Menu Filtri a comparsa -->
-    <div *ngIf="mostraMenuFiltri" class="absolute left-0 top-14 bg-white border-4 border-health-primary rounded-2xl shadow-xl z-10 w-64 p-4 text-health-secondary font-bold text-sm">
+    <div *ngIf="mostraMenuFiltri" class="absolute left-0 top-14 bg-white border-4 border-health-primary rounded-2xl shadow-xl z-10 w-64 p-4 text-black font-bold text-sm">
         <div class="mb-2">Ordina per:</div>
         <div class="flex flex-col gap-2">
             <button (click)="sort('paziente'); mostraMenuFiltri = false;" class="text-left py-1 hover:text-health-primary">Nome Paziente (A-Z/Z-A)</button>
@@ -41,9 +41,29 @@
             <button (click)="sort('ora'); mostraMenuFiltri = false;" class="text-left py-1 hover:text-health-primary">Ora Esame</button>
         </div>
     </div>
-    <div class="flex items-center gap-2 text-sm text-health-primary font-bold">
-       Da: <input type="date" [(ngModel)]="filtroDal" (change)="applicaFiltroDate()" class="pill-input py-1 px-3 w-36">
-       A: <input type="date" [(ngModel)]="filtroAl" (change)="applicaFiltroDate()" class="pill-input py-1 px-3 w-36">
+    <div class="flex items-center gap-2 relative">
+      <button (click)="mostraMenuCalendario = !mostraMenuCalendario" class="pill-btn !bg-gray-400 !text-white flex items-center gap-2 relative h-10 px-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        Appuntamenti dal.. al..
+      </button>
+      
+      <!-- Menu Calendario -->
+      <div *ngIf="mostraMenuCalendario" class="absolute left-0 top-12 bg-white border-4 border-health-primary rounded-2xl shadow-xl z-20 w-80 p-4 text-black font-bold">
+          <div class="mb-4 text-health-primary">Filtra per data:</div>
+          <div class="flex flex-col gap-4 text-sm">
+             <div class="flex items-center justify-between">
+               <span>Dal:</span>
+               <input type="date" [(ngModel)]="filtroDal" (change)="applicaFiltroDate()" class="pill-input py-1 px-3 w-44">
+             </div>
+             <div class="flex items-center justify-between">
+               <span>Al:</span>
+               <input type="date" [(ngModel)]="filtroAl" (change)="applicaFiltroDate()" class="pill-input py-1 px-3 w-44">
+             </div>
+             <button (click)="mostraMenuCalendario = false" class="pill-btn !py-1 text-xs">Chiudi</button>
+          </div>
+      </div>
     </div>
 
     <h2 class="text-xl font-bold text-health-primary ml-auto flex-1 text-center">Elenco appuntamenti</h2>
@@ -71,7 +91,7 @@
         <div class="col-span-1 border-r-2 border-health-primary truncate pr-2">{{ m.id }}</div>
         <div class="col-span-2 border-r-2 border-health-primary truncate px-2">{{ m.nomeCliente }} {{ m.cognomeCliente }}</div>
         <div class="col-span-2 border-r-2 border-health-primary truncate px-2">{{ m.dataPrenotazione | date:'dd/MM/yyyy' }}</div>
-        <div class="col-span-1 border-r-2 border-health-primary truncate px-2">{{ m.orarioPrenotazione }}</div>
+        <div class="col-span-1 border-r-2 border-health-primary truncate px-2">{{ m.orarioPrenotazione | slice:0:5 }}</div>
         <div class="col-span-2 border-r-2 border-health-primary truncate px-2">{{ m.codiceAmbulatorio }}</div>
         <div class="col-span-2 border-r-2 border-health-primary truncate px-2">{{ m.tipologia || 'ND' }}</div>
         <div class="col-span-1 border-r-2 border-health-primary flex items-center justify-center px-1">
@@ -104,7 +124,7 @@
           <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.nomeCliente}}</div>
           <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.cognomeCliente}}</div>
           <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.dataPrenotazione | date:'dd/MM/yyyy'}}</div>
-          <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.orarioPrenotazione}}</div>
+          <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.orarioPrenotazione | slice:0:5}}</div>
           
           <div class="border-4 bg-gray-400 text-white rounded-full py-2">{{appSelected?.codiceAmbulatorio}}</div>
           <div class="border-2 border-health-primary rounded-full py-2">{{appSelected?.tipologia || 'Visita'}}</div>
@@ -121,7 +141,7 @@
            <button (click)="accettaCliente()" class="pill-btn flex-1 shadow-inner" [disabled]="appSelected?.stato !== 'Prenotato'">ACCETTA CLIENTE</button>
        </div>
        
-       <div class="flex justify-between items-center text-xs text-health-primary font-bold mt-2 px-6 underline cursor-pointer">
+       <div class="flex justify-between items-center text-xs text-health-primary font-bold mt-2 px-6 underline cursor-pointer" *ngIf="appSelected?.stato === 'Prenotato'">
            <span class="hover:text-red-500" (click)="apriModifica()">modifica prenotazione</span>
            <span class="hover:text-red-500" (click)="cancellaPrenotazione()">cancella prenotazione</span>
        </div>
@@ -170,6 +190,14 @@
     <ng-container *ngIf="modaleTipoVisibile === 'CONSENSO'">
         <h2 class="text-health-primary font-bold text-2xl mb-8 text-center">Raccogli Consenso Informato</h2>
         
+        <div *ngIf="consensoEsistente" class="mb-8 p-4 border-4 border-green-500 rounded-3xl bg-green-50 flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-green-700 font-bold">Consenso già presente:</span>
+              <span class="text-xs text-green-600">{{consensoEsistente.tipologia}} - {{consensoEsistente.nomeFile}}</span>
+            </div>
+            <button (click)="scaricaFileConsenso()" class="pill-btn !py-1 !px-4 !text-xs !bg-green-600">SCARICA</button>
+        </div>
+
         <div class="space-y-6">
             <div>
               <label class="block font-bold text-health-primary mb-2">Tipologia di Consenso</label>

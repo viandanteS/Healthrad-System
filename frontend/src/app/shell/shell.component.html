@@ -12,16 +12,18 @@
     <div class="flex items-center justify-between px-8 py-3">
       <!-- Logo -->
       <a routerLink="/dashboard" class="cursor-pointer">
-        <img src="assets/logo.png" alt="HealthRAD" class="h-12 object-contain" />
+        <img src="assets/logo.png" alt="HealthRAD" class="h-24 object-contain" />
       </a>
 
       <!-- Bottoni di navigazione -->
       <nav class="flex items-center gap-3">
-        <a *appHasRole="['Addetto al Front-Office']" routerLink="/anagrafica" routerLinkActive="bg-health-primary text-white"
+        <a *appHasRole="['Addetto al Front-Office']" routerLink="/anagrafica"
+          routerLinkActive="bg-health-primary text-white"
           class="px-6 py-2.5 rounded-full border-2 border-health-primary text-health-primary font-bold text-sm font-sans tracking-wide hover:bg-health-primary hover:text-white transition-all text-center whitespace-nowrap">
           Anagrafica clienti
         </a>
-        <a *appHasRole="['Addetto al Front-Office']" routerLink="/appuntamenti" routerLinkActive="bg-health-primary text-white"
+        <a *appHasRole="['Addetto al Front-Office']" routerLink="/appuntamenti"
+          routerLinkActive="bg-health-primary text-white"
           class="px-6 py-2.5 rounded-full border-2 border-health-primary text-health-primary font-bold text-sm font-sans tracking-wide hover:bg-health-primary hover:text-white transition-all text-center whitespace-nowrap">
           Gestione appuntamenti
         </a>

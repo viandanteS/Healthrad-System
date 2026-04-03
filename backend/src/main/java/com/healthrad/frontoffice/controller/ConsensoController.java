@@ -1,7 +1,10 @@
 package com.healthrad.frontoffice.controller;
 
+import com.healthrad.frontoffice.model.Consenso;
 import com.healthrad.frontoffice.service.ConsensoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ public class ConsensoController {
     @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public ResponseEntity<?> creaConsenso(
             @RequestParam("cfCliente") String cfCliente,
+            @RequestParam("idPrenotazione") Long idPrenotazione,
             @RequestParam("tipologia") String tipologia,
             @RequestParam("file") MultipartFile file) {
         try {
@@ -27,10 +31,34 @@ public class ConsensoController {
                 return ResponseEntity.badRequest().body("Nessun file selezionato");
             }
             // Salvataggio Blob su database
-            consensoService.allegaConsenso(cfCliente, tipologia, file);
+            consensoService.allegaConsenso(cfCliente, idPrenotazione, tipologia, file);
             return ResponseEntity.ok(Map.of("message", "Consenso inserito con successo"));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/download/{id}")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
+    public ResponseEntity<byte[]> downloadConsenso(@PathVariable Long id) {
+        try {
+            Consenso consenso = consensoService.getConsenso(id);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consenso.getNomeFile() + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(consenso.getFile());
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/prenotazione/{id}")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
+    public ResponseEntity<?> getConsensoByPrenotazione(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(consensoService.getByPrenotazione(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
