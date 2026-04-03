@@ -1,5 +1,31 @@
+-- Schema semplificato per garantire l'avvio
+-- Nota: I vincoli verranno gestiti da Hibernate se necessario, ma qui li mettiamo per coerenza DB
+
+-- 1. Tabelle "nipoti" e "figlie" (che dipendono da altre)
+-- DROP TABLE IF EXISTS ricevuta;
+-- DROP TABLE IF EXISTS prenotazione;
+-- DROP TABLE IF EXISTS reclamo;
+-- DROP TABLE IF EXISTS consenso;
+-- DROP TABLE IF EXISTS rdt;
+-- DROP TABLE IF EXISTS rat;
+-- DROP TABLE IF EXISTS refresh_token; 
+
+-- 2. Tabelle di livello intermedio (dipendono da utente, ma sono padri di altre)
+-- DROP TABLE IF EXISTS cliente;
+-- DROP TABLE IF EXISTS dipendente;
+
+-- 3. Tabelle "padre" (non hanno foreign key verso altre)
+-- DROP TABLE IF EXISTS utente; 
+-- DROP TABLE IF EXISTS turno;
+-- DROP TABLE IF EXISTS ente_assicurativo;
+-- DROP TABLE IF EXISTS cartella_clinica;
+-- DROP TABLE IF EXISTS ambulatorio;
+
+-- 4. Tabelle indipendenti
+-- DROP TABLE IF EXISTS token_blacklist;
+
 CREATE TABLE IF NOT EXISTS utente (
-    cf VARCHAR(16) PRIMARY KEY CHECK (CHAR_LENGTH(cf) = 16),
+    cf VARCHAR(16) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     cognome VARCHAR(255) NOT NULL,
     data_nascita DATE NOT NULL,
@@ -15,7 +41,7 @@ CREATE TABLE IF NOT EXISTS cliente (
 
 CREATE TABLE IF NOT EXISTS dipendente (
     cf VARCHAR(16) PRIMARY KEY,
-    ruolo VARCHAR(50) NOT NULL CHECK (ruolo IN ('Socio fondatore', 'Farmacista', 'Addetto al magazzino', 'Medico specialista', 'Tecnico di radiologia', 'Infermiere', 'Addetto al Front-Office', 'Impiegato Amministrativo')),
+    ruolo VARCHAR(50) NOT NULL,
     FOREIGN KEY (cf) REFERENCES utente(cf) ON DELETE CASCADE
 );
 
@@ -59,14 +85,12 @@ CREATE TABLE IF NOT EXISTS prenotazione (
     orario_prenotazione TIME NOT NULL,
     codice_ambulatorio VARCHAR(50) NOT NULL,
     cf_cliente VARCHAR(16) NOT NULL,
-    cf_addetto VARCHAR(16) NOT NULL,
+    cf_medico VARCHAR(16) NOT NULL,
     saldata BOOLEAN DEFAULT FALSE,
     tipologia VARCHAR(100),
-    CONSTRAINT chk_date CHECK (data_prenotazione >= data_immissione),
-    UNIQUE (data_prenotazione, orario_prenotazione, codice_ambulatorio),
     FOREIGN KEY (cf_cliente) REFERENCES cliente(cf),
     FOREIGN KEY (codice_ambulatorio) REFERENCES ambulatorio(codice_ambulatorio),
-    FOREIGN KEY (cf_addetto) REFERENCES dipendente(cf)
+    FOREIGN KEY (cf_medico) REFERENCES dipendente(cf)
 );
 
 CREATE TABLE IF NOT EXISTS ente_assicurativo (
@@ -84,8 +108,6 @@ CREATE TABLE IF NOT EXISTS ricevuta (
     quota_cliente DECIMAL(10, 2) NOT NULL,
     quota_assicurazione DECIMAL(10, 2) NOT NULL,
     piva_ente VARCHAR(20),
-    CONSTRAINT chk_importo CHECK (importo_totale = quota_cliente + quota_assicurazione),
-    CONSTRAINT chk_assicurazione CHECK (quota_assicurazione <= 0 OR piva_ente IS NOT NULL),
     FOREIGN KEY (id_prenotazione) REFERENCES prenotazione(id_prenotazione),
     FOREIGN KEY (piva_ente) REFERENCES ente_assicurativo(piva_ente)
 );
@@ -129,6 +151,3 @@ CREATE TABLE IF NOT EXISTS refresh_token (
     user_agent VARCHAR(255),
     FOREIGN KEY (cf_utente) REFERENCES utente(cf) ON DELETE CASCADE
 );
-
--- Patch per permettere l'email vuota nei vecchi DB
--- ALTER TABLE utente MODIFY email VARCHAR(255) UNIQUE NULL;

@@ -81,25 +81,25 @@
         </div>
 
         <div class="w-full">
-            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Ambulatorio/Medico</label>
-            <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="ambulatorio" (change)="onDataOAmbulatorioChange()">
-                <option value="">Ambulatorio/Medico</option>
-                <option *ngFor="let a of ambulatori" [value]="a">{{a}}</option>
-            </select>
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Data appuntamento</label>
+            <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="dataPrevista" [min]="minDate" (change)="onDataChange()">
         </div>
 
         <div class="w-full">
-            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Data appuntamento</label>
-            <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="dataPrevista" [min]="minDate" (change)="onDataOAmbulatorioChange()">
+            <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Ambulatorio/Medico</label>
+            <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="ambulatorio" (change)="onAmbulatorioChange()" [disabled]="!dataPrevista">
+                <option value="">Seleziona Ambulatorio...</option>
+                <option *ngFor="let a of ambulatori" [value]="a" [disabled]="!isAmbulatorioDisponibile(a)" [ngClass]="{'opacity-50': !isAmbulatorioDisponibile(a)}">
+                    {{a}} {{ !isAmbulatorioDisponibile(a) ? '(Non Attivo oggi)' : '' }}
+                </option>
+            </select>
         </div>
 
         <div class="w-full">
             <label class="block text-health-primary font-bold text-sm mb-2 pl-2">Ora appuntamento</label>
             <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="orarioSelezionato" [disabled]="!dataPrevista || !ambulatorio">
-                <option value="">HH/MM</option>
-                <option *ngFor="let o of orariPossibili" [value]="o" [disabled]="isOccupato(o)" [ngClass]="{'bg-gray-300 text-gray-400': isOccupato(o)}">
-                    {{o}} <span *ngIf="isOccupato(o)">(Non Disp.)</span>
-                </option>
+                <option value="">Seleziona Orario...</option>
+                <option *ngFor="let o of orariDisponibili" [value]="o">{{o}}</option>
             </select>
         </div>
   

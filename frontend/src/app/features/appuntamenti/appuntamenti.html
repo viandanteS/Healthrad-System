@@ -139,21 +139,25 @@
               </select>
             </div>
             <div>
-              <label class="block font-bold text-health-primary mb-2">Ambulatorio</label>
-              <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editAmbulatorio">
-                  <option *ngFor="let a of ambulatori" [value]="a">{{a}}</option>
-              </select>
+              <label class="block font-bold text-health-primary mb-2">Data appuntamento</label>
+              <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editData" [min]="minDate" (change)="onEditChange()">
             </div>
             <div>
-              <label class="block font-bold text-health-primary mb-2">Data appuntamento</label>
-              <input type="date" class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editData" [min]="minDate">
+              <label class="block font-bold text-health-primary mb-2">Ambulatorio</label>
+              <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editAmbulatorio" (change)="onEditChange()" [disabled]="!editData">
+                  <option *ngFor="let a of ambulatori" [value]="a" [disabled]="!isAmbulatorioDisponibile(a)" [ngClass]="{'opacity-50': !isAmbulatorioDisponibile(a)}">
+                    {{a}} {{ !isAmbulatorioDisponibile(a) ? '(Non Attivo oggi)' : '' }}
+                  </option>
+              </select>
             </div>
             <div>
               <label class="block font-bold text-health-primary mb-2">Ora appuntamento</label>
-              <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editOra">
-                  <option *ngFor="let o of orariPossibili" [value]="o">{{o}}</option>
+              <select class="pill-input w-full bg-gray-100 font-bold" [(ngModel)]="editOra" [disabled]="!editData || !editAmbulatorio">
+                  <option *ngFor="let o of orariDisponibili" [value]="o">{{o}}</option>
               </select>
             </div>
+
+
         </div>
         
         <div class="mt-8 flex justify-center gap-6">

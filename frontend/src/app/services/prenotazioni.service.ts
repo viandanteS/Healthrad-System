@@ -36,6 +36,16 @@ export class PrenotazioniService {
     return this.http.get<string[]>(`${this.apiUrl}/disponibilita?data=${data}&ambulatorio=${ambulatorio}`);
   }
 
+  getOrariDisponibili(data: string, ambulatorio: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/disponibili?data=${data}&ambulatorio=${ambulatorio}`);
+  }
+
+  getAmbulatoriDisponibili(data: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/ambulatori-disponibili?data=${data}`);
+  }
+
+
+
   aggiungiPrenotazione(prenotazione: any): Observable<PrenotazioneResponse> {
     return this.http.post<PrenotazioneResponse>(this.apiUrl, prenotazione);
   }

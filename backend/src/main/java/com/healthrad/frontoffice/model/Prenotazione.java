@@ -33,44 +33,95 @@ public class Prenotazione {
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cf_addetto", nullable = false)
-    private Dipendente addetto;
+    @JoinColumn(name = "cf_medico", nullable = false)
+    private Dipendente medico;
 
     private Boolean saldata = false;
 
     private String tipologia;
 
-    public Prenotazione() {}
+    public Prenotazione() {
+    }
 
     // Getters and Setters
 
-    public Long getIdPrenotazione() { return idPrenotazione; }
-    public void setIdPrenotazione(Long idPrenotazione) { this.idPrenotazione = idPrenotazione; }
+    public Long getIdPrenotazione() {
+        return idPrenotazione;
+    }
 
-    public String getStato() { return stato; }
-    public void setStato(String stato) { this.stato = stato; }
+    public void setIdPrenotazione(Long idPrenotazione) {
+        this.idPrenotazione = idPrenotazione;
+    }
 
-    public LocalDate getDataImmissione() { return dataImmissione; }
-    public void setDataImmissione(LocalDate dataImmissione) { this.dataImmissione = dataImmissione; }
+    public String getStato() {
+        return stato;
+    }
 
-    public LocalDate getDataPrenotazione() { return dataPrenotazione; }
-    public void setDataPrenotazione(LocalDate dataPrenotazione) { this.dataPrenotazione = dataPrenotazione; }
+    public void setStato(String stato) {
+        this.stato = stato;
+    }
 
-    public LocalTime getOrarioPrenotazione() { return orarioPrenotazione; }
-    public void setOrarioPrenotazione(LocalTime orarioPrenotazione) { this.orarioPrenotazione = orarioPrenotazione; }
+    public LocalDate getDataImmissione() {
+        return dataImmissione;
+    }
 
-    public Ambulatorio getAmbulatorio() { return ambulatorio; }
-    public void setAmbulatorio(Ambulatorio ambulatorio) { this.ambulatorio = ambulatorio; }
+    public void setDataImmissione(LocalDate dataImmissione) {
+        this.dataImmissione = dataImmissione;
+    }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public LocalDate getDataPrenotazione() {
+        return dataPrenotazione;
+    }
 
-    public Dipendente getAddetto() { return addetto; }
-    public void setAddetto(Dipendente addetto) { this.addetto = addetto; }
+    public void setDataPrenotazione(LocalDate dataPrenotazione) {
+        this.dataPrenotazione = dataPrenotazione;
+    }
 
-    public Boolean getSaldata() { return saldata; }
-    public void setSaldata(Boolean saldata) { this.saldata = saldata; }
+    public LocalTime getOrarioPrenotazione() {
+        return orarioPrenotazione;
+    }
 
-    public String getTipologia() { return tipologia; }
-    public void setTipologia(String tipologia) { this.tipologia = tipologia; }
+    public void setOrarioPrenotazione(LocalTime orarioPrenotazione) {
+        this.orarioPrenotazione = orarioPrenotazione;
+    }
+
+    public Ambulatorio getAmbulatorio() {
+        return ambulatorio;
+    }
+
+    public void setAmbulatorio(Ambulatorio ambulatorio) {
+        this.ambulatorio = ambulatorio;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Dipendente getMedico() {
+        return medico;
+    }
+
+    public void setMedico(Dipendente medico) {
+        this.medico = medico;
+    }
+
+    public Boolean getSaldata() {
+        return saldata;
+    }
+
+    public void setSaldata(Boolean saldata) {
+        this.saldata = saldata;
+    }
+
+    public String getTipologia() {
+        return tipologia;
+    }
+
+    public void setTipologia(String tipologia) {
+        this.tipologia = tipologia;
+    }
 }

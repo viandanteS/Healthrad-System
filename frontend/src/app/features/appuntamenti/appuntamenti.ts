@@ -46,11 +46,8 @@ export class Appuntamenti implements OnInit {
   minDate: string = new Date().toISOString().split('T')[0];
   tipologie = ['RX Torace', 'Risonanza Magnetica', 'Ecografia', 'TAC', 'Visita Specialistica'];
   ambulatori = ['A01', 'A02', 'B01', 'B02', 'C01'];
-  orariPossibili = [
-    '08:00','08:30','09:00','09:30','10:00','10:30',
-    '11:00','11:30','12:00','12:30','14:00','14:30',
-    '15:00','15:30','16:00','16:30','17:00','17:30'
-  ];
+  ambulatoriAttivi: string[] = [];
+  orariDisponibili: string[] = [];
 
   constructor(
     private prenotazioniService: PrenotazioniService,
@@ -149,8 +146,38 @@ export class Appuntamenti implements OnInit {
       this.editData = this.appSelected.dataPrenotazione || '';
       this.editOra = this.appSelected.orarioPrenotazione?.substring(0, 5) || '';
       this.modaleTipoVisibile = 'MODIFICA';
+      this.onEditChange();
     }
   }
+
+  onEditChange() {
+    if (this.editData) {
+        // Carica ambulatori attivi per la data
+        this.prenotazioniService.getAmbulatoriDisponibili(this.editData).subscribe({
+            next: (data) => this.ambulatoriAttivi = data,
+            error: () => this.ambulatoriAttivi = []
+        });
+
+        if (this.editAmbulatorio) {
+            this.prenotazioniService.getOrariDisponibili(this.editData, this.editAmbulatorio).subscribe({
+                next: (data) => {
+                    this.orariDisponibili = data.map(o => o.substring(0, 5));
+                    if (this.editOra && !this.orariDisponibili.includes(this.editOra)) {
+                        this.orariDisponibili.unshift(this.editOra);
+                        this.orariDisponibili.sort();
+                    }
+                },
+                error: () => this.orariDisponibili = []
+            });
+        }
+    }
+  }
+
+  isAmbulatorioDisponibile(cod: string): boolean {
+    return this.ambulatoriAttivi.includes(cod);
+  }
+
+
 
   salvaModifica() {
     if (!this.appSelected) return;

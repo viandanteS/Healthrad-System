@@ -31,8 +31,8 @@ export class AggiungiAppuntamentoComponent implements OnInit {
 
   tipologie = ['RX Torace', 'Risonanza Magnetica', 'Ecografia', 'TAC', 'Visita Specialistica'];
   ambulatori = ['A01', 'A02', 'B01', 'B02', 'C01'];
-  orariPossibili = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
-  orariOcupati: string[] = [];
+  ambulatoriAttivi: string[] = [];
+  orariDisponibili: string[] = [];
 
   constructor(
     private http: HttpClient,
@@ -99,20 +99,49 @@ export class AggiungiAppuntamentoComponent implements OnInit {
     });
   }
 
-  onDataOAmbulatorioChange() {
+  onDataChange() {
+    this.ambulatorio = '';
+    this.orariDisponibili = [];
     this.orarioSelezionato = '';
+    
+    if (this.dataPrevista) {
+      this.service.getAmbulatoriDisponibili(this.dataPrevista).subscribe({
+        next: (attivi) => {
+          console.log("Ambulatori attivi per la data " + this.dataPrevista + ": ", attivi);
+          this.ambulatoriAttivi = attivi;
+        },
+        error: (err) => {
+          console.error("Errore recupero ambulatori: ", err);
+          this.ambulatoriAttivi = [];
+        }
+      });
+    }
+
+  }
+
+  onAmbulatorioChange() {
+    this.orarioSelezionato = '';
+    this.orariDisponibili = [];
+    
     if (this.dataPrevista && this.ambulatorio) {
-      this.service.getOrariOccupati(this.dataPrevista, this.ambulatorio).subscribe({
-        next: (occupati) => {
-          // La query ritorna array di stringhe HH:mm:ss o HH:mm
-          this.orariOcupati = occupati.map(o => o.substring(0, 5));
+      this.service.getOrariDisponibili(this.dataPrevista, this.ambulatorio).subscribe({
+        next: (disponibili) => {
+          this.orariDisponibili = disponibili.map(o => o.substring(0, 5));
+        },
+        error: () => {
+          this.orariDisponibili = [];
+          this.toast.show("Nessun orario disponibile per questo ambulatorio", "error");
         }
       });
     }
   }
 
+  isAmbulatorioDisponibile(cod: string): boolean {
+    return this.ambulatoriAttivi.includes(cod);
+  }
+
   isOccupato(ora: string): boolean {
-    return this.orariOcupati.includes(ora);
+    return false; // Non più usato poiché mostriamo solo i liberi
   }
 
   conferma() {

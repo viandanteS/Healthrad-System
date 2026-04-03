@@ -18,7 +18,7 @@ export class LoginComponent {
   successMessage = '';
   mockTokenMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   onLogin() {
     this.errorMessage = '';
