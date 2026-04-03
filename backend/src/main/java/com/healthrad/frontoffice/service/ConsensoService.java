@@ -57,4 +57,12 @@ public class ConsensoService {
         return consensoRepository.findByPrenotazione_IdPrenotazione(idPrenotazione)
             .orElseThrow(() -> new IllegalArgumentException("Nessun consenso trovato per questa prenotazione"));
     }
+
+    @Transactional
+    public void eliminaConsenso(Long id) {
+        if (!consensoRepository.existsById(id)) {
+            throw new IllegalArgumentException("Consenso non trovato");
+        }
+        consensoRepository.deleteById(id);
+    }
 }

@@ -148,12 +148,24 @@ export class Appuntamenti implements OnInit {
       this.editData = this.appSelected.dataPrenotazione || '';
       this.editOra = this.appSelected.orarioPrenotazione?.substring(0, 5) || '';
       this.modaleTipoVisibile = 'MODIFICA';
+      // Solo al primo caricamento in modale manteniamo i valori originali, 
+      // ma salviamo la data iniziale per rilevare i cambiamenti successivi
+      this.lastEditData = this.editData;
       this.onEditChange();
     }
   }
 
+  lastEditData: string = '';
   onEditChange() {
     if (this.editData) {
+        // Se la data è cambiata rispetto all'ultimo controllo, resettiamo i campi dipendenti
+        if (this.lastEditData && this.editData !== this.lastEditData) {
+            this.editAmbulatorio = '';
+            this.editOra = '';
+            this.orariDisponibili = [];
+        }
+        this.lastEditData = this.editData;
+
         // Carica ambulatori attivi per la data
         this.prenotazioniService.getAmbulatoriDisponibili(this.editData).subscribe({
             next: (data) => this.ambulatoriAttivi = data,
@@ -223,14 +235,17 @@ export class Appuntamenti implements OnInit {
     if (this.appSelected) {
       this.consensoService.getConsensoByPrenotazione(this.appSelected.id).subscribe({
         next: (res) => this.consensoEsistente = res,
-        error: () => this.consensoEsistente = null
+        error: (err) => {
+            // Se 404, semplicemente non esiste consenso, non mostriamo errore
+            this.consensoEsistente = null;
+        }
       });
     }
   }
 
   scaricaFileConsenso() {
-    if(this.consensoEsistente) {
-      this.consensoService.downloadConsenso(this.consensoEsistente.id).subscribe({
+    if(this.consensoEsistente && this.consensoEsistente.idConsenso) {
+      this.consensoService.downloadConsenso(this.consensoEsistente.idConsenso).subscribe({
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -240,6 +255,25 @@ export class Appuntamenti implements OnInit {
         },
         error: () => this.toast.show("Errore download file", "error")
       });
+    } else {
+        this.toast.show("ID Consenso non trovato", "error");
+    }
+  }
+
+  eliminaConsenso() {
+    if (this.consensoEsistente && this.consensoEsistente.idConsenso) {
+      if (confirm("Sei sicuro di voler eliminare questo consenso? L'operazione e definitiva.")) {
+        this.consensoService.eliminaConsenso(this.consensoEsistente.idConsenso).subscribe({
+          next: () => {
+            this.toast.show("Consenso eliminato con successo!", "success");
+            this.consensoEsistente = null;
+            // Opzionale: puliamo i campi del form per un nuovo inserimento
+            this.consensoTypologia = '';
+            this.consensoFile = null;
+          },
+          error: (err) => this.toast.show(err.error || "Errore durante l'eliminazione", "error")
+        });
+      }
     }
   }
 

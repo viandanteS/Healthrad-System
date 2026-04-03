@@ -61,4 +61,15 @@ public class ConsensoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Addetto al Front-Office')")
+    public ResponseEntity<?> eliminaConsenso(@PathVariable Long id) {
+        try {
+            consensoService.eliminaConsenso(id);
+            return ResponseEntity.ok(Map.of("message", "Consenso eliminato con successo"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

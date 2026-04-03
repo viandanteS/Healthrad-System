@@ -11,9 +11,9 @@
         <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.nomeCliente}}</div>
         <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.cognomeCliente}}</div>
         <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.dataPrenotazione | date:'dd/MM/yyyy'}}</div>
-        <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.orarioPrenotazione}}</div>
+        <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.orarioPrenotazione | slice:0:5}}</div>
         
-        <div class="border-4 bg-gray-400 text-white rounded-full py-2">{{appuntamento.codiceAmbulatorio}}</div>
+        <div class="border-2 border-health-primary bg-white text-health-primary rounded-full py-2">{{appuntamento.codiceAmbulatorio}}</div>
         <div class="border-2 border-health-primary rounded-full py-2">{{appuntamento.tipologia || 'ND'}}</div>
         <div class="col-span-1"></div>
 
@@ -40,9 +40,9 @@
   
       <!-- TASTI CONFERMA -->
       <div class="flex justify-end gap-4 mt-8">
-         <button (click)="indietro()" class="pill-btn hover:shadow-inner !bg-gray-300 !text-health-primary">Indietro</button>
-         <button (click)="confermaSalda()" class="pill-btn hover:shadow-inner" [disabled]="appuntamento.saldata">
-            {{ appuntamento.saldata ? 'GIA SALDATA' : 'CONFERMA E STAMPA' }}
+         <button (click)="indietro()" class="pill-btn hover:shadow-inner !bg-gray-300 !text-health-primary px-12">Indietro</button>
+         <button *ngIf="!appuntamento.saldata" (click)="confermaSalda()" class="pill-btn hover:shadow-inner px-12">
+            CONFERMA E STAMPA
          </button>
       </div>
   

@@ -27,4 +27,8 @@ export class ConsensoService {
   getConsensoByPrenotazione(idPrenotazione: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/prenotazione/${idPrenotazione}`);
   }
+
+  eliminaConsenso(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
