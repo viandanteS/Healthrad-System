@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PrenotazioneResponse, PrenotazioniService } from '../../services/prenotazioni.service';
 import { ToastService } from '../../services/toast.service';
 import { ConsensoService } from '../../services/consenso.service';
@@ -24,6 +24,7 @@ export class Appuntamenti implements OnInit {
   filtroAl: string = '';
 
   // Ordine
+  mostraMenuFiltri: boolean = false;
   sortDirAmbulatorio: boolean = true;
   sortDirPaziente: boolean = true;
   sortDirData: boolean = true;
@@ -32,15 +33,30 @@ export class Appuntamenti implements OnInit {
   // Dettagli Modale
   dettaglioAperto: boolean = false;
   appSelected: PrenotazioneResponse | null = null;
-  modaleTipoVisibile: 'DETTAGLI' | 'CONSENSO' = 'DETTAGLI';
+  modaleTipoVisibile: 'DETTAGLI' | 'CONSENSO' | 'MODIFICA' = 'DETTAGLI';
   // Form Consenso
   consensoTypologia: string = '';
   consensoFile: File | null = null;
+
+  // Form Modifica
+  editTipologia: string = '';
+  editAmbulatorio: string = '';
+  editData: string = '';
+  editOra: string = '';
+  minDate: string = new Date().toISOString().split('T')[0];
+  tipologie = ['RX Torace', 'Risonanza Magnetica', 'Ecografia', 'TAC', 'Visita Specialistica'];
+  ambulatori = ['A01', 'A02', 'B01', 'B02', 'C01'];
+  orariPossibili = [
+    '08:00','08:30','09:00','09:30','10:00','10:30',
+    '11:00','11:30','12:00','12:30','14:00','14:30',
+    '15:00','15:30','16:00','16:30','17:00','17:30'
+  ];
 
   constructor(
     private prenotazioniService: PrenotazioniService,
     private consensoService: ConsensoService,
     private router: Router,
+    private route: ActivatedRoute,
     private toast: ToastService
   ) {}
 
@@ -53,6 +69,14 @@ export class Appuntamenti implements OnInit {
       next: (data) => {
         this.appuntamentiOriginali = data;
         this.appuntamenti = [...data];
+        
+        // Se c`è un query parameter cf, filtra automaticamente
+        this.route.queryParams.subscribe(params => {
+           if(params['cf']) {
+               this.searchQuery = params['cf'];
+               this.applicaFiltroRicerca();
+           }
+        });
       },
       error: () => this.toast.show("Errore nel caricamento appuntamenti", "error")
     });
@@ -112,6 +136,38 @@ export class Appuntamenti implements OnInit {
 
   apriConsensi() {
     this.modaleTipoVisibile = 'CONSENSO';
+  }
+
+  apriModifica() {
+    if (this.appSelected) {
+      if (this.appSelected.stato !== 'Prenotato') {
+        this.toast.show("Puoi modificare solo appuntamenti in stato 'Prenotato'.", "error");
+        return;
+      }
+      this.editTipologia = this.appSelected.tipologia || '';
+      this.editAmbulatorio = this.appSelected.codiceAmbulatorio || '';
+      this.editData = this.appSelected.dataPrenotazione || '';
+      this.editOra = this.appSelected.orarioPrenotazione?.substring(0, 5) || '';
+      this.modaleTipoVisibile = 'MODIFICA';
+    }
+  }
+
+  salvaModifica() {
+    if (!this.appSelected) return;
+    const payload = {
+      tipologia: this.editTipologia,
+      ambulatorio: { codiceAmbulatorio: this.editAmbulatorio },
+      dataPrenotazione: this.editData,
+      orarioPrenotazione: this.editOra + ':00'
+    };
+    this.prenotazioniService.modificaPrenotazione(this.appSelected.id, payload).subscribe({
+      next: () => {
+        this.toast.show("Prenotazione aggiornata con successo!", "success");
+        this.caricaAppuntamenti();
+        this.chiudiDettaglio();
+      },
+      error: (err) => this.toast.show(err.error || "Errore durante la modifica", "error")
+    });
   }
 
   onFileSelected(event: any) {
@@ -182,3 +238,4 @@ export class Appuntamenti implements OnInit {
     }
   }
 }
+

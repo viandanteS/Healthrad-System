@@ -25,8 +25,7 @@ public class ClienteController {
     @PreAuthorize("hasAuthority('Addetto al Front-Office')")
     public List<Cliente> getClienti(@RequestParam(required = false) String q) {
         if (q != null && !q.isBlank()) {
-            return clienteRepository
-                .findByNomeContainingIgnoreCaseOrCognomeContainingIgnoreCaseOrEmailContainingIgnoreCase(q, q, q);
+            return clienteRepository.cercaClienti(q);
         }
         return clienteRepository.findAll();
     }

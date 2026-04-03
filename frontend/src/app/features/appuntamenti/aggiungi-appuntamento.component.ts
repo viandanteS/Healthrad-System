@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PrenotazioniService } from '../../services/prenotazioni.service';
 import { ToastService } from '../../services/toast.service';
 import { Subject } from 'rxjs';
@@ -19,12 +19,14 @@ export class AggiungiAppuntamentoComponent implements OnInit {
   // Dati Utente
   cfRicevuto: string = '';
   clienteTrovato: any = null;
+  clientiSuggeriti: any[] = [];
   cfSubject: Subject<string> = new Subject<string>();
 
   // Form Appuntamento
   tipologiaVisita: string = '';
   ambulatorio: string = '';
   dataPrevista: string = '';
+  minDate: string = new Date().toISOString().split('T')[0];
   orarioSelezionato: string = '';
 
   tipologie = ['RX Torace', 'Risonanza Magnetica', 'Ecografia', 'TAC', 'Visita Specialistica'];
@@ -36,33 +38,63 @@ export class AggiungiAppuntamentoComponent implements OnInit {
     private http: HttpClient,
     private service: PrenotazioniService,
     private toast: ToastService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+        if(params['cf']) {
+            this.cfRicevuto = params['cf'];
+            this.http.get(`http://localhost:8080/api/clienti/cerca?cf=${this.cfRicevuto}`).subscribe({
+                next: (res: any) => this.selezionaCliente(res),
+                error: () => {}
+            });
+        }
+    });
+
     this.cfSubject.pipe(
-      debounceTime(500),
+      debounceTime(300),
       distinctUntilChanged()
-    ).subscribe(cf => {
-      if(cf.length === 16) {
-         this.cercaCliente(cf);
-      } else {
-         this.clienteTrovato = null;
+    ).subscribe(query => {
+      if(query.length >= 2 && !this.clienteTrovato) {
+         this.cercaClientiSuggeriti(query);
+      } else if (query.length < 2) {
+         this.clientiSuggeriti = [];
       }
     });
   }
 
   onCfChange() {
+    this.clienteTrovato = null; // Resetta il cliente selezionato se l'utente digita ancora
     this.cfSubject.next(this.cfRicevuto.toUpperCase());
   }
 
-  cercaCliente(cf: string) {
-    this.http.get(`http://localhost:8080/api/clienti/cerca?cf=${cf}`).subscribe({
+  cercaClientiSuggeriti(query: string) {
+    this.http.get(`http://localhost:8080/api/clienti?q=${query}`).subscribe({
       next: (res: any) => {
-        this.clienteTrovato = res;
+        this.clientiSuggeriti = res;
       },
       error: () => {
-        this.clienteTrovato = null;
+        this.clientiSuggeriti = [];
+      }
+    });
+  }
+
+  selezionaCliente(cliente: any) {
+    this.clienteTrovato = cliente;
+    this.cfRicevuto = cliente.cf;
+    this.clientiSuggeriti = [];
+  }
+
+  mostraTuttiIClienti() {
+    this.clienteTrovato = null;
+    this.http.get(`http://localhost:8080/api/clienti`).subscribe({
+      next: (res: any) => {
+        this.clientiSuggeriti = res;
+      },
+      error: () => {
+        this.clientiSuggeriti = [];
       }
     });
   }
@@ -98,7 +130,7 @@ export class AggiungiAppuntamentoComponent implements OnInit {
         tipologia: this.tipologiaVisita,
         ambulatorio: { codiceAmbulatorio: this.ambulatorio },
         cliente: { cf: this.clienteTrovato.cf },
-        addetto: { cf: 'MROFRC80A01H501Z' } // TODO: recuperare da utente loggato dal claims JWT, metto default temporaneo
+        addetto: { cf: 'FO00000000000001' } // TODO: recuperare da utente loggato dal claims JWT, metto default temporaneo
     };
 
     this.service.aggiungiPrenotazione(payload).subscribe({

@@ -10,6 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/consensi")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ConsensoController {
 
     @Autowired

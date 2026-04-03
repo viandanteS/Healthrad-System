@@ -12,15 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-/**
- * DataInitializer: popola il DB con utenti di test al primo avvio.
- * Usa la stessa libreria jBCrypt usata per la verifica, eliminando
- * qualsiasi problema di compatibilità degli hash.
- */
 @Component
 public class DataInitializer implements ApplicationRunner {
 
@@ -29,14 +25,13 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired private UtenteRepository utenteRepository;
     @Autowired private DipendenteRepository dipendenteRepository;
     @Autowired private ClienteRepository clienteRepository;
+    @Autowired private JdbcTemplate jdbcTemplate;
 
-    // Password in chiaro per i test — sarà hashata a runtime con jBCrypt
     private static final String TEST_PASSWORD = "password";
 
     @Override
     public void run(ApplicationArguments args) {
 
-        // Genera l'hash una volta sola con la libreria jBCrypt
         String hash = BCrypt.hashpw(TEST_PASSWORD, BCrypt.gensalt(10));
         log.info("DataInitializer: sincronizzazione utenti con hash BCrypt aggiornato...");
 
@@ -49,7 +44,7 @@ public class DataInitializer implements ApplicationRunner {
         fo.setDataNascita(LocalDate.of(1985, 5, 20));
         fo.setTelefono("+39 347 123 4567");
         fo.setEmail("frontoffice@healthrad.it");
-        fo.setPassword(hash);  // Aggiorna SEMPRE con hash fresco
+        fo.setPassword(hash);
         fo.setRuolo("Addetto al Front-Office");
         dipendenteRepository.save(fo);
         log.info("Sincronizzato: frontoffice@healthrad.it con nuovo hash");
@@ -81,6 +76,18 @@ public class DataInitializer implements ApplicationRunner {
         clienteRepository.save(cliente);
         log.info("Sincronizzato: cliente@example.com");
 
+        // ---- 4. Turni, RAT e RDT per il medico ----
+        log.info("DataInitializer: inserimento turni e associazioni RAT/RDT...");
+        String[] date = {"2026-04-01", "2026-04-04", "2026-04-10", "2026-04-15", "2026-04-20", "2026-04-25", "2026-04-30"};
+        for (String d : date) {
+            jdbcTemplate.update("MERGE INTO turno KEY (data_turno, ora_inizio, ora_fine) VALUES (?, '08:00:00', '18:00:00')", d);
+            jdbcTemplate.update("MERGE INTO rat KEY (codice_ambulatorio, data_turno, ora_inizio, ora_fine) VALUES ('A01', ?, '08:00:00', '18:00:00')", d);
+            jdbcTemplate.update("MERGE INTO rat KEY (codice_ambulatorio, data_turno, ora_inizio, ora_fine) VALUES ('A02', ?, '08:00:00', '18:00:00')", d);
+            jdbcTemplate.update("MERGE INTO rdt KEY (data_turno, ora_inizio, ora_fine, cf_dipendente) VALUES (?, '08:00:00', '18:00:00', 'MED0000000000001', TRUE)", d);
+        }
+        log.info("Turni RAT/RDT inseriti per il medico Giulia Bianchi");
+
         log.info("DataInitializer completato. Password di test: '{}'", TEST_PASSWORD);
     }
 }
+

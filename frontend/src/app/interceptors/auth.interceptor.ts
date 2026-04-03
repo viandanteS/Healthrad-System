@@ -25,7 +25,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         }
       } else if (error.status === 403) {
         toast.show('Accesso negato. Non hai i permessi per questa operazione.', 'error');
-        auth.logout();
       }
       return throwError(() => error);
     })

@@ -13,6 +13,7 @@ export interface PrenotazioneResponse {
   nomeCliente: string;
   cognomeCliente: string;
   cfMedico: string;
+  operatore: string;
   nomeMedico: string;
   saldata: boolean;
   tipologia: string;
@@ -49,5 +50,9 @@ export class PrenotazioniService {
 
   cancellaPrenotazione(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  modificaPrenotazione(id: number, payload: any): Observable<PrenotazioneResponse> {
+    return this.http.put<PrenotazioneResponse>(`${this.apiUrl}/${id}`, payload);
   }
 }
